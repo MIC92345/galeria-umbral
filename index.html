@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Galería Umbral · Prototipo</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f5f2;--surface:#fff;--ink:#16181d;--mute:#535965;--line:#d6d5cf;--acc:#2a3fd1;--on-acc:#fff;--ok:#1d6b43;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101216;--surface:#181b21;--ink:#f1f0ec;--mute:#a7acb6;--line:#2d313a;--acc:#9aa8ff;--on-acc:#0d1030;--ok:#6fd3a0;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101216;--surface:#181b21;--ink:#f1f0ec;--mute:#a7acb6;--line:#2d313a;--acc:#9aa8ff;--on-acc:#0d1030;--ok:#6fd3a0;color-scheme:dark}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 70px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Instrument Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:Newsreader,Georgia,serif;font-weight:600;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(2rem,5vw,3.4rem)}h2{font-size:1.7rem}h3{font-size:1.2rem}
+a{color:var(--acc)}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+#app:focus,#app:focus-visible{outline:none}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;background:var(--surface);padding:8px;z-index:50}
+header{position:sticky;top:env(safe-area-inset-top,0px);background:var(--surface);border-bottom:1px solid var(--line);z-index:10}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--surface);z-index:11}
+.bar{max-width:1100px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-family:Newsreader,serif;font-size:1.4rem;font-weight:600;text-decoration:none;color:var(--ink);margin-right:auto}
+nav ul{list-style:none;display:flex;gap:4px;margin:0;padding:0}
+nav a{display:block;padding:8px 12px;text-decoration:none;color:var(--ink);border-radius:6px}
+nav a[aria-current="page"]{background:var(--ink);color:var(--bg)}
+#menuBtn{display:none}
+button,.btn{font:inherit;cursor:pointer;border-radius:6px;border:1px solid var(--ink);background:transparent;color:var(--ink);padding:9px 16px;text-decoration:none;display:inline-block}
+.primary{background:var(--acc);border-color:var(--acc);color:var(--on-acc);font-weight:600}
+main{max-width:1100px;margin:auto;padding:24px 16px 64px}
+.crumbs{font-size:.9rem;color:var(--mute);margin-bottom:16px}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:32px;align-items:center;padding:24px 0 40px}
+.hero p{max-width:52ch;color:var(--mute)}
+.art{border:1px solid var(--line);aspect-ratio:4/5;width:100%}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);padding:12px;display:flex;flex-direction:column;gap:6px}
+.card a.t{color:var(--ink);text-decoration:none;font-family:Newsreader,serif;font-size:1.15rem;font-weight:600}
+.meta{color:var(--mute);font-size:.92rem}
+.lines{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:8px 0 40px}
+.lines a{background:var(--surface);border:1px solid var(--line);padding:18px;text-decoration:none;color:var(--ink)}
+.filters{display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin:12px 0 20px}
+label{display:flex;flex-direction:column;font-size:.9rem;gap:4px}
+input,select,textarea{font:inherit;padding:9px 10px;border:1px solid var(--mute);border-radius:6px;background:var(--surface);color:var(--ink)}
+.chk{flex-direction:row;align-items:center;gap:8px}
+.detail{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}
+dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:12px 0}dt{color:var(--mute)}dd{margin:0}
+.item{background:var(--surface);border:1px solid var(--line);padding:18px;margin-bottom:16px;display:grid;grid-template-columns:90px 1fr auto;gap:18px;align-items:center}
+.date{font-family:Newsreader,serif;text-align:center;line-height:1.1}.date b{font-size:2.2rem;display:block}
+.panel{background:var(--surface);border:1px solid var(--line);padding:20px;margin-top:12px;display:grid;gap:12px;max-width:520px}
+.ok{border-color:var(--ok);color:var(--ok);font-weight:600}
+.empty{padding:32px;border:1px dashed var(--mute);text-align:center}
+.fav[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+footer{border-top:1px solid var(--line);padding:24px 16px;text-align:center;color:var(--mute);font-size:.92rem}
+footer a{margin:0 8px}
+@media(max-width:760px){
+ #menuBtn{display:block}
+ nav{width:100%}nav ul{flex-direction:column}nav.closed{display:none}
+ .hero,.detail,.lines{grid-template-columns:1fr}
+ .item{grid-template-columns:70px 1fr}.item .act{grid-column:1/-1}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#app">Saltar al contenido</a>
+<header>
+ <div class="bar">
+  <a class="logo" href="#inicio">Galería Umbral</a>
+  <button id="menuBtn" aria-expanded="false" aria-controls="nav">Menú</button>
+  <nav id="nav" aria-label="Principal" class="closed">
+   <ul>
+    <li><a href="#obras" data-k="obras">Obras</a></li>
+    <li><a href="#eventos" data-k="eventos">Exposiciones</a></li>
+    <li><a href="#cursos" data-k="cursos">Cursos</a></li>
+    <li><a href="#favoritos" data-k="favoritos">Favoritos <span id="favN">(0)</span></a></li>
+   </ul>
+  </nav>
+ </div>
+</header>
+<main id="app" tabindex="-1"></main>
+<footer>
+ <p>Galería Umbral · Calle 70 #5-23, Bogotá · Mar–Dom 10:00–18:00</p>
+ <a href="#inicio">Mapa del sitio</a><a href="#inicio">Preguntas frecuentes</a><a href="#inicio">Contacto</a>
+</footer>
+
+<script>
+const OBRAS=[
+{id:1,t:"Marea alta",a:"Lucía Ferrer",y:2023,tec:"Óleo",dim:"120 × 90 cm",p:6800000,d:true,c:["#1d3a6e","#4f86c6","#e8d9b0"]},
+{id:2,t:"Raíz expuesta",a:"Mateo Quiroga",y:2022,tec:"Escultura",dim:"60 × 40 × 40 cm",p:9500000,d:true,c:["#5a3b2a","#a0693f","#d9b88f"]},
+{id:3,t:"Ciudad en pausa",a:"Ana Duarte",y:2024,tec:"Fotografía",dim:"80 × 120 cm",p:2400000,d:true,c:["#222","#777","#ddd"]},
+{id:4,t:"Jardín de ceniza",a:"Lucía Ferrer",y:2021,tec:"Acrílico",dim:"100 × 100 cm",p:4900000,d:false,c:["#3c4a3a","#8aa07c","#f0e6c8"]},
+{id:5,t:"Umbral rojo",a:"Mateo Quiroga",y:2024,tec:"Óleo",dim:"150 × 110 cm",p:12000000,d:true,c:["#7a1620","#d8423b","#f3c9a8"]},
+{id:6,t:"Hilo y memoria",a:"Ana Duarte",y:2023,tec:"Grabado",dim:"50 × 70 cm",p:1200000,d:true,c:["#14213d","#fca311","#e5e5e5"]}];
+const EVENTOS=[
+{id:1,d:"21",m:"nov",t:"Inauguración: Cartografías del agua",lug:"Sala principal",costo:"Gratis",cupo:60},
+{id:2,d:"28",m:"nov",t:"Visita guiada con la artista Lucía Ferrer",lug:"Sala 2",costo:"$25.000",cupo:20},
+{id:3,d:"05",m:"dic",t:"Charla: Coleccionar arte por primera vez",lug:"Auditorio",costo:"Gratis",cupo:40}];
+const CURSOS=[
+{id:1,t:"Dibujo desde cero",ins:"Ana Duarte",niv:"Básico",mod:"Presencial",dur:"6 semanas",hor:"Sáb 9:00–12:00",p:480000},
+{id:2,t:"Cerámica contemporánea",ins:"Mateo Quiroga",niv:"Intermedio",mod:"Presencial",dur:"8 semanas",hor:"Mié 18:00–21:00",p:720000},
+{id:3,t:"Historia del arte colombiano",ins:"Lucía Ferrer",niv:"Básico",mod:"Virtual",dur:"4 semanas",hor:"Jue 19:00–21:00",p:260000}];
+
+const $=(s,r=document)=>r.querySelector(s);
+const cop=n=>"$"+n.toLocaleString("es-CO");
+let favs=[];try{favs=JSON.parse(localStorage.getItem("umbral-favs")||"[]")}catch(e){}
+const saveFavs=()=>{try{localStorage.setItem("umbral-favs",JSON.stringify(favs))}catch(e){};$("#favN").textContent="("+favs.length+")"};
+const art=(o,cls="art")=>`<div class="${cls}" role="img" aria-label="Imagen de la obra ${o.t}, de ${o.a}: composición abstracta en ${o.tec.toLowerCase()}" style="background:linear-gradient(155deg,${o.c[0]} 0 45%,${o.c[1]} 45% 78%,${o.c[2]} 78%)"></div>`;
+const card=o=>`<article class="card">${art(o)}<a class="t" href="#obra-${o.id}">${o.t}</a><span class="meta">${o.a} · ${o.tec} · ${o.y}</span><span><b>${cop(o.p)}</b> ${o.d?"":"<span class='meta'>(vendida)</span>"}</span></article>`;
+
+function confirmForm(form,msg,nameSel){
+ form.addEventListener("submit",e=>{e.preventDefault();
+  if(!form.checkValidity()){form.reportValidity();return}
+  const out=document.createElement("p");out.className="ok";out.setAttribute("role","status");
+  out.textContent=msg.replace("{n}",$(nameSel,form).value);
+  form.replaceWith(out);out.tabIndex=-1;out.focus()});
+}
+const field=(l,id,type="text",extra="")=>`<label for="${id}">${l}<input id="${id}" type="${type}" required ${extra}></label>`;
+
+const V={
+inicio(){return `
+<section class="hero"><div><h1>Arte colombiano contemporáneo, para ver, coleccionar y aprender.</h1>
+<p>Compra obras originales, reserva tu lugar en las exposiciones o inscríbete a un curso con artistas de la galería.</p>
+<div class="row"><a class="btn primary" href="#obras">Ver obras</a><a class="btn" href="#eventos">Próximas exposiciones</a></div></div>${art(OBRAS[4])}</section>
+<section class="lines" aria-label="Qué puedes hacer">
+<a href="#obras"><h3>Comprar obras</h3><span class="meta">Explora, compara y consulta por una obra.</span></a>
+<a href="#eventos"><h3>Reservar un evento</h3><span class="meta">Inauguraciones, visitas guiadas y charlas.</span></a>
+<a href="#cursos"><h3>Inscribirme a un curso</h3><span class="meta">Talleres presenciales y virtuales.</span></a></section>
+<h2>Obras destacadas</h2><div class="grid">${OBRAS.slice(0,4).map(card).join("")}</div>`},
+
+obras(){return `<div class="crumbs"><a href="#inicio">Inicio</a> / Obras</div><h1>Obras</h1>
+<div class="filters" role="search">
+<label for="q">Buscar por título o artista<input id="q" type="search" placeholder="Ej: Ferrer, óleo"></label>
+<label for="ft">Técnica<select id="ft"><option value="">Todas</option>${[...new Set(OBRAS.map(o=>o.tec))].map(t=>`<option>${t}</option>`).join("")}</select></label>
+<label for="fp">Precio<select id="fp"><option value="">Cualquiera</option><option value="3000000">Hasta $3.000.000</option><option value="7000000">Hasta $7.000.000</option><option value="99999999">Más de $7.000.000</option></select></label>
+<label class="chk" for="fd"><input id="fd" type="checkbox"> Solo disponibles</label></div>
+<p class="meta" id="count" role="status"></p><div class="grid" id="list"></div>`},
+
+obra(id){const o=OBRAS.find(x=>x.id==id);if(!o)return V.inicio();
+ const rel=OBRAS.filter(x=>x.a===o.a&&x.id!==o.id);
+ return `<div class="crumbs"><a href="#inicio">Inicio</a> / <a href="#obras">Obras</a> / ${o.t}</div>
+<div class="detail">${art(o)}<div><h1>${o.t}</h1><p class="meta">${o.a}, ${o.y}</p>
+<dl><dt>Técnica</dt><dd>${o.tec}</dd><dt>Dimensiones</dt><dd>${o.dim}</dd><dt>Precio</dt><dd><b>${cop(o.p)}</b></dd><dt>Estado</dt><dd>${o.d?"Disponible":"Vendida"}</dd></dl>
+<div class="row"><button class="fav" id="favBtn" aria-pressed="${favs.includes(o.id)}">${favs.includes(o.id)?"Quitar de favoritos":"Guardar en favoritos"}</button>
+${o.d?`<button class="primary" id="askBtn">Consultar por esta obra</button>`:""}</div>
+<div id="askBox"></div>
+${rel.length?`<h3>Más de ${o.a}</h3><div class="grid">${rel.map(card).join("")}</div>`:""}</div></div>`},
+
+eventos(){return `<div class="crumbs"><a href="#inicio">Inicio</a> / Exposiciones</div><h1>Exposiciones y eventos</h1>
+${EVENTOS.map(e=>`<article class="item"><div class="date"><b>${e.d}</b>${e.m}</div><div><h3>${e.t}</h3><span class="meta">${e.lug} · ${e.costo} · Cupo: ${e.cupo}</span></div><div class="act"><button class="primary" data-ev="${e.id}">Reservar</button></div><div class="act" id="ev${e.id}" style="grid-column:1/-1"></div></article>`).join("")}`},
+
+cursos(){return `<div class="crumbs"><a href="#inicio">Inicio</a> / Cursos</div><h1>Cursos y talleres</h1>
+<div class="filters"><label for="cn">Nivel<select id="cn"><option value="">Todos</option><option>Básico</option><option>Intermedio</option></select></label>
+<label for="cm">Modalidad<select id="cm"><option value="">Todas</option><option>Presencial</option><option>Virtual</option></select></label></div>
+<div id="clist"></div>`},
+
+favoritos(){const l=OBRAS.filter(o=>favs.includes(o.id));
+ return `<div class="crumbs"><a href="#inicio">Inicio</a> / Favoritos</div><h1>Mis favoritos</h1>`+(l.length?`<div class="grid">${l.map(card).join("")}</div>`:`<div class="empty"><p>Aún no guardas obras.</p><a class="btn primary" href="#obras">Explorar obras</a></div>`)}
+};
+
+const after={
+obras(){const q=$("#q"),ft=$("#ft"),fp=$("#fp"),fd=$("#fd");
+ const draw=()=>{const s=q.value.trim().toLowerCase();
+  const r=OBRAS.filter(o=>(!s||(o.t+" "+o.a+" "+o.tec).toLowerCase().includes(s))&&(!ft.value||o.tec===ft.value)&&(!fd.checked||o.d)&&
+   (!fp.value||(fp.value==="99999999"?o.p>7000000:o.p<=+fp.value)));
+  $("#count").textContent=r.length+" obras";
+  $("#list").innerHTML=r.length?r.map(card).join(""):`<div class="empty" style="grid-column:1/-1"><p>No encontramos obras con esos filtros.</p><p class="meta">Prueba quitar un filtro o buscar por el nombre de un artista.</p></div>`};
+ [q,ft,fp,fd].forEach(el=>el.addEventListener("input",draw));draw()},
+obra(id){const o=OBRAS.find(x=>x.id==id);if(!o)return;
+ $("#favBtn").onclick=()=>{favs=favs.includes(o.id)?favs.filter(x=>x!==o.id):[...favs,o.id];saveFavs();route()};
+ const ask=$("#askBtn");if(ask)ask.onclick=()=>{$("#askBox").innerHTML=`<form class="panel" novalidate><h3>Consulta por «${o.t}»</h3>${field("Nombre","an")}${field("Correo","ac","email")}<label for="am">Mensaje<textarea id="am" rows="3">Hola, me interesa esta obra.</textarea></label><button class="primary">Enviar consulta</button></form>`;
+  const f=$("#askBox form");f.noValidate=false;confirmForm(f,"Gracias, {n}. Recibimos tu consulta y te escribiremos en 24 horas.","#an");$("#an").focus()}},
+eventos(){document.querySelectorAll("[data-ev]").forEach(b=>b.onclick=()=>{
+  const box=$("#ev"+b.dataset.ev);box.innerHTML=`<form class="panel"><h3>Reserva tu lugar</h3>${field("Nombre","en"+b.dataset.ev)}${field("Correo","ec"+b.dataset.ev,"email")}${field("Personas","ep"+b.dataset.ev,"number",'min="1" max="4" value="1"')}<button class="primary">Confirmar reserva</button></form>`;
+  confirmForm($("form",box),"Reserva confirmada, {n}. Te enviamos los detalles por correo.","input");$("input",box).focus()})},
+cursos(){const n=$("#cn"),m=$("#cm");
+ const draw=()=>{const r=CURSOS.filter(c=>(!n.value||c.niv===n.value)&&(!m.value||c.mod===m.value));
+  $("#clist").innerHTML=r.length?r.map(c=>`<article class="item" style="grid-template-columns:1fr auto"><div><h3>${c.t}</h3><span class="meta">Instructor: ${c.ins} · ${c.niv} · ${c.mod} · ${c.dur} · ${c.hor}</span><p><b>${cop(c.p)}</b></p></div><div class="act"><button class="primary" data-c="${c.id}">Inscribirme</button></div><div style="grid-column:1/-1" id="c${c.id}"></div></article>`).join(""):`<div class="empty">No hay cursos con ese nivel y modalidad. Prueba cambiar un filtro.</div>`;
+  document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{const c=CURSOS.find(x=>x.id==b.dataset.c),box=$("#c"+c.id);
+   box.innerHTML=`<form class="panel"><h3>Inscripción: ${c.t}</h3>${field("Nombre","cn"+c.id+"n")}${field("Correo","cc"+c.id,"email")}<label for="cp${c.id}">Medio de pago<select id="cp${c.id}"><option>Tarjeta</option><option>PSE</option></select></label><p class="meta">Total a pagar: ${cop(c.p)} (simulado)</p><button class="primary">Pagar e inscribirme</button></form>`;
+   confirmForm($("form",box),"Inscripción y pago confirmados, {n}. ¡Nos vemos en clase!","input");$("input",box).focus()})};
+ [n,m].forEach(el=>el.addEventListener("input",draw));draw()}
+};
+
+function route(){
+ const h=(location.hash||"#inicio").slice(1),[k,id]=h.split("-"),view=V[k]?k:"inicio";
+ $("#app").innerHTML=V[view](id);after[view]&&after[view](id);
+ document.querySelectorAll("nav a").forEach(a=>a.dataset.k===view?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
+ $("#nav").classList.add("closed");$("#menuBtn").setAttribute("aria-expanded","false");
+ saveFavs();window.scrollTo(0,0);$("#app").focus({preventScroll:true})}
+$("#menuBtn").onclick=e=>{const c=$("#nav").classList.toggle("closed");e.currentTarget.setAttribute("aria-expanded",String(!c))};
+if(matchMedia("(min-width:761px)").matches)$("#nav").classList.remove("closed");
+addEventListener("hashchange",route);route();
+</script>
+</body>
+</html>
